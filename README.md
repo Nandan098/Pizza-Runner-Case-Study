@@ -34,7 +34,7 @@
   <li>Removed duplicate records</li>
 </ul>
 
-<h2>🛠️ Data Cleaning & Transformation</h2>
+<h2> Data Cleaning & Transformation</h2>
 <p>Key techniques used:</p>
 <ul>
   <li>NULLIF()</li>
