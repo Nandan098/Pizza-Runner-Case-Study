@@ -1,4 +1,4 @@
-<img width="244" height="134" alt="10" src="https://github.com/user-attachments/assets/fd2dfcaa-ff74-4a0e-a84a-99c0c508f3e5" />### Pizza Case Study
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/288c7c35-4b70-4366-8cd9-7d46e18b2fff" />#### Pizza Case Study
 
 1.	Create a DATABASE: pizza_runner
 ### TABLES
@@ -265,9 +265,8 @@ VALUES
   select * from pizza_toppings;
 ```
     
-                                                                   ####   Questions
-                                                           
-                                                                ####  A. Pizza Metrics
+####   Questions
+####  A. Pizza Metrics
 																
 -- 1. How many pizzas were ordered?
 ```sql
@@ -378,7 +377,7 @@ VALUES
 <img width="244" height="134" alt="10" src="https://github.com/user-attachments/assets/6e4b3157-97a3-40e1-8d4b-30e863fdc9cb" />
 
 
-                                                                                      --  B. Runner and Customer Experience
+####  B. Runner and Customer Experience
                                          
 -- 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 ```sql
@@ -473,7 +472,7 @@ VALUES
 <img width="344" height="142" alt="7" src="https://github.com/user-attachments/assets/ec8567eb-b234-4e58-9607-d69b552f4f6f" />
 
 
-                                                     -- C. Ingredient Optimisation
+#### C. Ingredient Optimisation
                                                      
              
  -- 1. What are the standard ingredients for each pizza ?
@@ -563,4 +562,78 @@ VALUES
 ```
 
 <img width="296" height="154" alt="4" src="https://github.com/user-attachments/assets/81a3a822-83fc-4674-b873-962a62e7c355" />
+
+
+#### D. Pricing and Ratings
+	
+-- 1. If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?
+  ```sql   
+	  select
+  sum(
+    case
+      when p.pizza_name = 'Meatlovers' then 12
+      when p.pizza_name = 'Vegetarian' then 10
+    end
+  ) as total_earned
+from customer_orders_cleaned1 as c
+join pizza_names as p
+  on c.pizza_id = p.pizza_id;
+  ```
+<img width="198" height="71" alt="1" src="https://github.com/user-attachments/assets/ed629050-d972-47e2-93db-114ad1d5fbb1" />
+
+
+
+-- 2. What if there was an additional $1 charge for any pizza extras? Add cheese is $1 extra.
+      -- per order: 1 if cheese in extras, else 0
+ ```sql   
+     select
+  p.pizza_name,
+  count(*) as total_pizzas,
+  sum(
+    case
+      when p.pizza_name = 'Meatlovers' then 12
+      when p.pizza_name = 'Vegetarian' then 10
+    end
+  ) as pizza_revenue,
+  sum(
+    case
+      when c.extras is null or c.extras = '' then 0
+      else length(c.extras) - length(replace(c.extras, ',', '')) + 1
+    end
+  ) as extras_revenue
+from customer_orders_cleaned1 c
+join pizza_names p
+  on c.pizza_id = p.pizza_id
+group by p.pizza_name;
+```
+
+<img width="461" height="96" alt="2" src="https://github.com/user-attachments/assets/27dd1b78-08b9-4769-a76d-a00432a4741d" />
+
+ -- 3. If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
+```sql
+   select
+  r.runner_id,
+  sum(case when p.pizza_name = 'Meatlovers' then 12
+           when p.pizza_name = 'Vegetarian' then 10 end) as pizza_revenue,
+  round(sum(r.distance_km) * 0.3, 2) as runner_payment,
+  round(
+    sum(case when p.pizza_name = 'Meatlovers' then 12
+             when p.pizza_name = 'Vegetarian' then 10 end)
+    - sum(r.distance_km) * 0.3,
+    2
+  ) as money_left_over
+from customer_orders_cleaned1 c
+join runner_orders_cleaned r
+  on c.order_id = r.order_id
+join pizza_names p
+  on c.pizza_id = p.pizza_id
+where r.cancellation is null
+group by r.runner_id
+order by r.runner_id;
+
+```
+<img width="486" height="106" alt="3" src="https://github.com/user-attachments/assets/20399a5d-7931-4c1a-8b70-be7ef7acda35" />
+
+
+
 
