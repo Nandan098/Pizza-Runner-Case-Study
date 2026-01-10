@@ -1,4 +1,4 @@
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/288c7c35-4b70-4366-8cd9-7d46e18b2fff" />#### Pizza Case Study
+#### Pizza Case Study
 
 1.	Create a DATABASE: pizza_runner
 ### TABLES
