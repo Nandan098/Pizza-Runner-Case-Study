@@ -344,7 +344,7 @@ VALUES
        group by hour(order_time);
    ```   
 -- 10. What was the volume of orders for each day of the week?
-	```sql
+	
        select dayname(order_time) as order_day,count(*) as pizzas_count
        from customer_orders_cleaned1
        group by order_day
