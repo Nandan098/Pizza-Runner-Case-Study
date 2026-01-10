@@ -1,4 +1,4 @@
-### Pizza Case Study
+<img width="244" height="134" alt="10" src="https://github.com/user-attachments/assets/fd2dfcaa-ff74-4a0e-a84a-99c0c508f3e5" />### Pizza Case Study
 
 1.	Create a DATABASE: pizza_runner
 ### TABLES
@@ -265,28 +265,35 @@ VALUES
   select * from pizza_toppings;
 ```
     
-                                                                      -- Questions
+                                                                   ####   Questions
                                                            
-                                                        --   A. Pizza Metrics
+                                                                ####  A. Pizza Metrics
+																
 -- 1. How many pizzas were ordered?
 ```sql
       select count(pizza_id) as total_pizza_ordered
       from customer_orders_cleaned1;
  ```
-      
+<img width="188" height="86" alt="1" src="https://github.com/user-attachments/assets/9c76a55c-83c8-400d-a007-72af90975638" />
+  
 -- 2. How many unique customer orders were made?
    ```sql
       select count(distinct customer_id) as total_customer  
       from customer_orders_cleaned1;
    ```
-      
+
+<img width="165" height="94" alt="2" src="https://github.com/user-attachments/assets/a21bb712-f897-4877-9a43-b855c2716453" />
+	  
 -- 3. How many successful orders were delivered by each runner?
 ```sql
       select runner_id,count(*) as Completed_orders_by_runner 
       from runner_orders_cleaned
 	    where cancellation is null
       group by runner_id;
-```  
+```
+
+<img width="330" height="115" alt="3" src="https://github.com/user-attachments/assets/9c84163f-a24c-47a6-b94e-fa1b7ea6c175" />
+
 -- 4. How many of each type of pizza was delivered?
   ```sql 
       select p.pizza_name,count(c.pizza_id) as total_pizza 
@@ -295,7 +302,10 @@ VALUES
       pizza_names as p
       on c.pizza_id=p.pizza_id
       group by p.pizza_name;
-  ```    
+  ```
+
+<img width="221" height="109" alt="4" src="https://github.com/user-attachments/assets/3cf77b9f-c194-4c4b-b80f-496d8e6ff67f" />
+
 -- 5. How many Vegetarian and Meatlovers were ordered by each customer?
   ```sql   
      select c.customer_id,
@@ -306,6 +316,10 @@ VALUES
      on c.pizza_id = p.pizza_id
      group by c.customer_id;
 ```
+
+<img width="315" height="169" alt="5" src="https://github.com/user-attachments/assets/fc480f07-78c5-4467-a9c5-816f927c75f3" />
+
+
 -- 6. What was the maximum number of pizzas delivered in a single order?
   ```sql
       select customer_id,count(pizza_id) as no_of_pizzas_orders
@@ -313,6 +327,8 @@ VALUES
       group by customer_id
       order by count(pizza_id) desc;
    ```
+
+<img width="286" height="157" alt="6" src="https://github.com/user-attachments/assets/4f74a8a9-fb6c-4a4f-8a38-0c1262300897" />
 
 -- 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
   ```sql  
@@ -327,7 +343,9 @@ VALUES
       group by customer_id
       order by customer_id;
 ```
-	
+
+<img width="436" height="169" alt="7" src="https://github.com/user-attachments/assets/6559aa96-2b5b-4706-8a12-7604fdb1aa9e" />
+
 -- 8. How many pizzas were delivered that had both exclusions and extras?
   ```sql    
       select count(*) as pizzas_with_exclusions_and_extras
@@ -337,16 +355,212 @@ VALUES
       on c.order_id=r.order_id
       where  c.exclusions is not null and c.extras is not null;
 ```
+
+<img width="288" height="61" alt="8" src="https://github.com/user-attachments/assets/bc5f7024-2d45-490a-b9dd-5011d5617dbc" />
+
  -- 9. What was the total volume of pizzas ordered for each hour of the day?
    ```sql   
        select hour(order_time) as Order_hour,count(*) as pizza_count
        from customer_orders_cleaned1
        group by hour(order_time);
-   ```   
+   ```
+
+<img width="234" height="165" alt="9" src="https://github.com/user-attachments/assets/499afda9-a499-4719-9af0-33b39a4d2c50" />
+
 -- 10. What was the volume of orders for each day of the week?
-	
+```sql	
        select dayname(order_time) as order_day,count(*) as pizzas_count
        from customer_orders_cleaned1
        group by order_day
        order by field(order_day,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
-   ```    
+   ```
+
+<img width="244" height="134" alt="10" src="https://github.com/user-attachments/assets/6e4b3157-97a3-40e1-8d4b-30e863fdc9cb" />
+
+
+                                                                                      --  B. Runner and Customer Experience
+                                         
+-- 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+```sql
+        select
+             date_add('2021-01-01',
+              interval floor(datediff(registration_date, '2021-01-01') / 7) * 7 day
+              ) as week_start,
+        count(*) as runners_signed_up
+        from runners
+	    group by week_start
+        order by week_start;
+  ```
+<img width="282" height="106" alt="1" src="https://github.com/user-attachments/assets/f0e05b69-283b-4163-a52c-6f13bf72cd6d" />
+
+
+
+-- 2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
+ ```sql   
+	  select r.runner_id,round(avg(timestampdiff(minute,c.order_time,r.pickup_time)),2) as avg_time_to_pickup_the_order
+      from customer_orders_cleaned1 as c
+      join
+      runner_orders_cleaned as r
+      on c.order_id=r.order_id
+      group by r.runner_id;
+   ```
+
+<img width="340" height="129" alt="2" src="https://github.com/user-attachments/assets/9fc0908b-449d-408d-8f26-632b9497d26e" />
+
+-- 3. Is there any relationship between the number of pizzas and how long the order takes to prepare?
+  ```sql   
+	 select pizza_count, round(avg(prep_time_minutes),2) as avg_prep_time
+      from (
+             select c.order_id,count(*) as pizza_count,
+			 timestampdiff(minute, min(c.order_time), r.pickup_time) as prep_time_minutes
+			 from customer_orders_cleaned1 c
+             join runner_orders_cleaned r
+             on c.order_id = r.order_id
+             where r.pickup_time IS NOT NULL
+             group by c.order_id, r.pickup_time
+       ) as t
+	   group by pizza_count
+       order by pizza_count;
+```
+<img width="263" height="117" alt="3" src="https://github.com/user-attachments/assets/9db0bb73-71fe-4a6c-be12-6398f0487413" />
+
+-- 4. What was the average distance travelled for each customer?
+  ```sql   
+	  select c.customer_id,round(avg(r.distance_km),2) as avg_distance
+      from customer_orders_cleaned1 as c
+      join
+      runner_orders_cleaned as r
+      on c.order_id=r.order_id
+      and r.cancellation is null
+      and r.distance_km is not null
+      group by c.customer_id;
+```
+<img width="244" height="180" alt="4" src="https://github.com/user-attachments/assets/49b9e09c-19cb-4afa-8dcc-607883603fc4" />
+
+ 
+-- 5. What was the difference between the longest and shortest delivery times for all orders ?
+  ```sql   
+	  select MIN(delivery_time) AS shortest_delivery_min,MAX(delivery_time) AS longest_delivery_min,max(delivery_time)-min(t.delivery_time) as diff_longest_shotest_time_min 
+	  from (select c.order_id,round(timestampdiff(minute,min(c.order_time),min(r.pickup_time)),2) as delivery_time
+      from customer_orders_cleaned1 as c
+      join
+	  runner_orders_cleaned as r
+      on c.order_id=r.order_id
+      and r.pickup_time is not null
+      group by c.order_id) as t;
+```
+
+<img width="564" height="102" alt="5" src="https://github.com/user-attachments/assets/17b31259-b08f-4b17-be09-0033cde01098" />
+
+ -- 6. What was the average speed for each runner for each delivery and do you notice any trend for these values?
+  ```sql  
+	  select runner_id,order_id,round(avg(distance_km/duration_min*60.0),2) as avg_speed_km_per_hour
+      from runner_orders_cleaned
+      where distance_km is not null and duration_min is not null
+      group by runner_id,order_id
+      order by runner_id;
+```
+
+<img width="376" height="230" alt="6" src="https://github.com/user-attachments/assets/8eb6aa5e-6a67-4405-a4d3-23cceac6288f" />
+
+ -- 7. What is the successful delivery percentage for each runner?
+   ```sql   
+	   select runner_id,round(sum(case when cancellation is null then 1 else 0 end)*100.0/count(*),2) as successful_delivery_percentage
+       from runner_orders_cleaned
+       group by runner_id;
+   ```
+
+<img width="344" height="142" alt="7" src="https://github.com/user-attachments/assets/ec8567eb-b234-4e58-9607-d69b552f4f6f" />
+
+
+                                                     -- C. Ingredient Optimisation
+                                                     
+             
+ -- 1. What are the standard ingredients for each pizza ?
+   ```sql  
+	   select p.pizza_name,group_concat(pt.topping_name order by pt.topping_name separator ',') as standard_ingredients
+       from pizza_names as p
+       join
+       pizza_recipes_cleaned as pr
+       join
+       pizza_toppings as pt
+       on p.pizza_id=pr.pizza_id
+       and pr.topping_id=pt.topping_id
+       group by p.pizza_name
+       order by p.pizza_name;
+```
+<img width="461" height="106" alt="1" src="https://github.com/user-attachments/assets/be8a2a2e-be83-4be2-90f3-3f66b7fc9abf" />
+
+-- 2. What was the most commonly added extra?
+```sql	
+	  select pt.topping_name, count(*) as extra_count
+      from customer_orders_cleaned1 c
+      join json_table(
+        concat(
+            '["',
+          replace(c.extras, ', ', '","'),
+            '"]'
+        ),
+        '$[*]' columns (
+            extra_id varchar(5) path '$'
+        )
+      ) as jt
+      join pizza_toppings as pt
+	  on pt.topping_id = cast(jt.extra_id as unsigned)
+	  where c.extras is not null
+      and c.extras is not null
+	  group by pt.topping_name
+      order by extra_count desc;
+```
+
+<img width="252" height="134" alt="2" src="https://github.com/user-attachments/assets/12d244b6-8012-4d16-94ef-787ce71e9b19" />
+
+ -- 3. What was the most common exclusion?
+ ```sql   
+	   select pt.topping_name, count(*) AS exclusion_count
+       from customer_orders_cleaned1 as c
+       join json_table (
+       concat(
+        '["',
+        replace(c.exclusions, ', ', '","'),
+        '"]'
+        ),
+       '$[*]' columns (
+        exclusion_id varchar(10) path '$'
+        )
+        ) as jt
+        on c.exclusions is not null
+		join pizza_toppings as pt
+		on pt.topping_id = CAST(jt.exclusion_id as unsigned)
+		group by pt.topping_name
+        order by exclusion_count desc
+		limit 1;
+```
+
+<img width="261" height="102" alt="3" src="https://github.com/user-attachments/assets/944ce2f2-2e6e-4bca-a5a6-a0ee437a6b79" />
+
+
+-- 4. What is the total quantity of each ingredient used in all delivered pizzas sorted by most frequent first?
+```sql
+      select jt.topping_id, pt.topping_name, count(*) as count
+      from customer_orders_cleaned as c
+      join json_table(
+      concat('[',
+           replace(concat_ws(',',exclusions,extras),' ',''),
+           ']'),
+	  '$[*]' columns(
+       topping_id int path '$')
+	) as jt
+     join
+      pizza_toppings as pt
+      on pt.topping_id=jt.topping_id
+	join 
+    runner_orders_cleaned as r
+    on r.order_id=c.order_id
+    where r.cancellation is null
+    group by jt.topping_id,pt.topping_name
+    order by count desc;
+```
+
+<img width="296" height="154" alt="4" src="https://github.com/user-attachments/assets/81a3a822-83fc-4674-b873-962a62e7c355" />
+
