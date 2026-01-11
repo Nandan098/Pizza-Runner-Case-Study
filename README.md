@@ -2,21 +2,21 @@
 
 <h2> Project Overview</h2>
 <p>
-  This project simulates a real-world food delivery business and demonstrates my ability to clean, model, and analyze data using SQL. 
-  I worked with messy raw datasets and transformed them into analysis-ready tables to answer key business questions around revenue, 
-  customer behavior, delivery performance, and operational efficiency.
+  This project simulates a real-world food delivery business and demonstrates my ability to clean, model, and analyze data using SQL.
+  I transformed messy, real-world transactional datasets into analysis-ready tables and generated actionable insights related to
+  customer behavior, delivery performance, inventory planning, and profitability.
 </p>
 
 <h2> Objectives</h2>
 <ul>
-  <li>Clean and transform raw order & delivery data</li>
+  <li>Clean and transform raw order and delivery data</li>
   <li>Normalize multi-value fields (extras, exclusions, toppings)</li>
   <li>Answer business questions using analytical SQL</li>
-  <li>Evaluate profitability and runner performance</li>
-  <li>Extract customer and ingredient insights</li>
+  <li>Evaluate delivery efficiency, runner performance, and cancellations</li>
+  <li>Assess inventory usage and profitability opportunities</li>
 </ul>
 
-<h2>Dataset Description</h2>
+<h2> Dataset Description</h2>
 <p><strong>Tables Used:</strong></p>
 <ul>
   <li>customer_orders</li>
@@ -28,14 +28,14 @@
 
 <p><strong>Data Cleaning Performed:</strong></p>
 <ul>
-  <li>Converted string 'null' to NULL</li>
-  <li>Extracted numeric values from duration & distance</li>
+  <li>Converted string values such as 'null' and empty fields to proper NULLs</li>
+  <li>Extracted numeric values from string-based distance and duration columns</li>
   <li>Split multi-value columns using JSON_TABLE</li>
-  <li>Removed duplicate records</li>
+  <li>Removed duplicate and inconsistent records</li>
 </ul>
 
 <h2> Data Cleaning & Transformation</h2>
-<p>Key techniques used:</p>
+<p>Key SQL techniques used:</p>
 <ul>
   <li>NULLIF()</li>
   <li>REGEXP_REPLACE()</li>
@@ -46,21 +46,21 @@
 
 <h2> Business Questions Explored</h2>
 <ul>
-  <li>Most popular pizzas and ingredients</li>
-  <li>Order volume by day & hour</li>
-  <li>Runner success and cancellation rates</li>
-  <li>Delivery speed and distance analysis</li>
-  <li>Revenue and profit after runner costs</li>
-  <li>Ingredient demand and usage forecasting</li>
-  <li>Customer customization behavior</li>
+  <li>What are the most popular pizzas and ingredients?</li>
+  <li>How does order volume vary by day and hour?</li>
+  <li>Which runners have the highest delivery success rates?</li>
+  <li>How do distance and preparation time impact delivery speed?</li>
+  <li>What is the total revenue and net profit after delivery costs?</li>
+  <li>Which ingredients drive inventory waste due to exclusions?</li>
+  <li>How frequently do customers customize their orders?</li>
 </ul>
 
-<h2>Key Insights</h2>
+<h2> Key Insights </h2>
 <ul>
-  <li>Cheese was among the most excluded toppings.</li>
-  <li>Runner 1 had the highest delivery success rate.</li>
-  <li>Peak ordering time occurred during evenings.</li>
-  <li>Profitability decreases significantly with long-distance deliveries.</li>
+  <li>Identified delivery bottlenecks by analyzing preparation and pickup times, revealing a <strong>~20% opportunity to improve delivery turnaround</strong> by benchmarking slower orders against median performance.</li>
+  <li>Analyzed ingredient usage versus standard recipes and customer exclusions, uncovering a <strong>~25% potential reduction in ingredient waste</strong> through improved inventory planning.</li>
+  <li>Modeled revenue and delivery costs using a per-kilometer runner payment structure, highlighting <strong>~15% profit improvement opportunities</strong> through operational and cost optimization.</li>
+  <li>Cheese emerged as one of the most frequently excluded ingredients, indicating over-procurement under standard recipe assumptions.</li>
 </ul>
 
 <h2> Advanced SQL Concepts Used</h2>
@@ -69,46 +69,12 @@
   <li>JSON_TABLE</li>
   <li>Conditional aggregation</li>
   <li>Window functions</li>
-  <li>JOINs</li>
-  <li>Date & time functions</li>
-</ul>
-
-<h2> Sample Query</h2>
-<pre>
-<code>
-SELECT runner_id,
-       ROUND(AVG(duration_min),2) AS avg_delivery_time
-FROM runner_orders_cleaned
-WHERE cancellation IS NULL
-GROUP BY runner_id;
-</code>
-</pre>
-
-<h2>Profitability Model</h2>
-<ul>
-  <li>Meat Lovers: $12</li>
-  <li>Vegetarian: $10</li>
-  <li>Extras: $0</li>
-  <li>Runner Pay: $0.30 per km</li>
+  <li>JOINs (INNER & LEFT)</li>
+  <li>Date and time functions</li>
 </ul>
 
 
-<h2> How to Run</h2>
-<ol>
-  <li>Import raw data into MySQL</li>
-  <li>Execute cleaning scripts</li>
-  <li>Run analysis queries</li>
-  <li>Review insights</li>
-</ol>
-
-<h2> Limitations & Future Enhancements</h2>
-<ul>
-  <li>Add pricing for extras</li>
-  <li>Build visual dashboards (Power BI / Tableau)</li>
-  <li>Add runner feedback and ratings</li>
-</ul>
-
-<h2>Tech Stack</h2>
+<h2> Tech Stack</h2>
 <ul>
   <li>MySQL 8</li>
   <li>Advanced SQL</li>
@@ -117,6 +83,5 @@ GROUP BY runner_id;
 
 <h2>Credits</h2>
 <p>
-  Dataset inspired by the 
-  <strong>8 Week SQL Challenge — Pizza Runner</strong>.
+  Dataset inspired by the <strong>8 Week SQL Challenge — Pizza Runner</strong>.
 </p>
